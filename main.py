@@ -61,6 +61,8 @@ def getFirebaseScore():
     return pointsvalue[0]["value"]
 
 def writeFirebaseScore(score):
+    if not pointscollection:
+        firebaseSetup()
     pointscollection.document('1').set({'value': score})
 def getNumber(score):
     try:
@@ -89,8 +91,8 @@ def writescore(newscore):
 
 def getscore():
     global score
-    if score!=-999:
-        return score
+    # if score!=-999:
+    #     return score
     score= getFirebaseScore()
     return score
 
