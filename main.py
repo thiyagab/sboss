@@ -29,7 +29,7 @@ def inlinequery(bot, update):
                 title='Request '+str(score)+"+"+str(newscore)+'='+str(score+newscore),
                 reply_markup=InlineKeyboardMarkup(keyboard),
                 input_message_content=InputTextMessageContent(
-                    'Request for '+str(newscore)+' points')),
+                    'Request for'+str(score)+"+"+str(newscore)+'='+str(score+newscore)+' points')),
            )
     results.append(  InlineQueryResultArticle(
                 id=uuid4(),
@@ -38,7 +38,7 @@ def inlinequery(bot, update):
                     'Total points: '+str(score))))
 
 
-    update.inline_query.answer(results)
+    update.inline_query.answer(results,cache_time=5)
 
 def firebaseSetup():
     print('Firebase setup')
@@ -53,11 +53,15 @@ def firebaseSetup():
     print(getFirebaseScore())
 
 def getFirebaseScore():
+    print('Get score ')
+    if not pointscollection:
+        firebaseSetup()
     docs = pointscollection.stream()
     pointsvalue = []
     for doc in docs:
         pointsvalue.append(doc.to_dict())
     # docs[0].set(values)
+    print('score '+str(pointsvalue[0]["value"]))
     return pointsvalue[0]["value"]
 
 def writeFirebaseScore(score):
@@ -77,7 +81,7 @@ def button(bot, update):
         score = getNumber(newscore)
         if(score):
             writescore(score)
-            query.edit_message_text(text='Added: '+str(newscore)+" Total points : "+str(score))
+            query.edit_message_text(text="Total points : "+str(score))
     elif query.data.startswith("2#"):
         query.edit_message_text(text="Request Rejected")
 
